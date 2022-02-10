@@ -1,2 +1,0 @@
-# StuFil
-Etudiant Filière

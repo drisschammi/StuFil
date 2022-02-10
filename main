@@ -1,0 +1,87 @@
+package stufil;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class main {
+
+	public static void main(String[] args) {
+		
+		// L'utilité de ces 3 variables c'est qu'on va les utiliser dans la connection
+		String url = "jdbc:mysql://localhost:3306/stufil";
+		String username = "root";
+ 		String password = "Driss@2002@";
+ 		
+ 		System.out.println("Entrer CNE"); // Demander à l'utilisateur d'entrer un CNE
+ 		Scanner sc1 = new Scanner(System.in); // Lire sc à partir du clavier en utilisant la classe prédifinie Scanner
+ 		String a = sc1.nextLine();  // Créer une variable p1 et l'affecter la valeur du Scanner
+ 		
+ 		System.out.println("Entrer Nom");
+ 		Scanner sc2 = new Scanner(System.in);
+ 		String b = sc2.nextLine();
+ 		
+ 		System.out.println("Entrer Prénom");
+ 		Scanner sc3 = new Scanner(System.in);
+ 		String c = sc3.nextLine();
+ 		
+ 		System.out.println("Entrer Age");
+ 		Scanner sc4 = new Scanner(System.in);
+ 		int p1 = sc4.nextInt();
+ 		
+ 		System.out.println("Entrer Id Filiere");
+ 		Scanner sc5 = new Scanner(System.in);
+ 		int p2 = sc5.nextInt();
+		
+ 		try {
+ 			
+ 			//le programme Java charge le pilote Oracle pour établir une connexion à la base de données
+ 			Class.forName("com.mysql.cj.jdbc.Driver");
+ 			
+ 			//La méthode getConnection() de la classe ‘DriverManager’ est utilisée pour établir la connexion avec la base de données.
+ 			Connection con = DriverManager.getConnection(url, username, password);
+ 			
+ 			//La méthode createStatement() de l’interface ‘Connection’ est utilisée pour créer un objet Statement. L’objet Statement est responsable de l’exécution des requêtes avec la base de données
+ 			Statement st = con.createStatement();
+ 			
+ 			//Lorsque la méthode executeUpdate() est utilisée pour exécuter un traitement de type DDL ( Data Definition Langage : définition de données ) comme la création d'un table, elle retourne 0. Si la méthode retourne 0, cela peut signifier deux choses : le traitement de mise à jour n'a affecté aucun enregistrement ou le traitement concernait un traitement de type DDL.
+ 			String sql = "insert into etudiant (CNE, Nom_Etud, Prenom, Age, Id) VALUES ('"+ a +"','"+ b +"','"+ c +"','"+ p1 +"', '"+ p2 +"')";
+ 			
+ 			int rows = st.executeUpdate(sql);
+ 			
+ 			if (rows>0) {
+ 				System.out.println("A row has been inserted");
+ 			}
+ 	
+ 	      }
+ 		catch(Exception e){
+ 			System.out.println("Eror: " +e);
+ 		}
+ 		
+ 		try {
+ 			//La méthode getConnection() de la classe ‘DriverManager’ est utilisée pour établir la connexion avec la base de données.
+ 			Connection con = DriverManager.getConnection(url, username, password);
+ 			String sql1 = "SELECT * FROM filiere INNER JOIN etudiant ON etudiant.Id = filiere.Id ";
+ 			//La méthode createStatement() de l’interface ‘Connection’ est utilisée pour créer un objet Statement. L’objet Statement est responsable de l’exécution des requêtes avec la base de données
+ 			Statement state = con.createStatement();
+ 			//La méthode executeQuery() de l’interface ‘Statement’ est utilisée pour exécuter des requêtes dans une base de données. Cette méthode renvoie l’objet de ResultSet qui peut être utilisé pour obtenir tous les enregistrements d’une table.
+ 			ResultSet result = state.executeQuery(sql1);
+ 			
+ 			while (result.next()) {
+ 				String Nom = result.getString("Nom_Etud");
+				String Prenom = result.getString("Prenom");
+				String Nom_Filière = result.getString("Nom_Filiere");
+ 				
+ 				
+ 				System.out.println("L'étudiant " + Nom + " " + Prenom + " a pour filiére :  " + Nom_Filière );
+ 				
+ 			}
+ 		}catch (SQLException e) {
+ 			System.out.print("error"+e);
+ 		}
+	}
+
+}
